@@ -1,79 +1,79 @@
-//�������ʱ��2021��11��2�գ���Ϸ�汾v13651
+//代码更新时间2021年11月2日，游戏版本v13651
 
-//--------------------�ָ���-------------------
+//--------------------分割线-------------------
 
-var  //�Զ������
+var  //自定义参数
   Kings: Integer;
 
-Function MapObjectType: Integer;  //�Զ��幦�ܣ�Ԥ���������ͬ���¼�����ţ�����Ӧ��ͬ�ĵ�ͼ���󡣡�����ͼ�����ſɲο���Ϸ�Դ���ͼ�༭��������
+Function MapObjectType: Integer;  //自定义功能，预设计数个不同的事件（编号），对应不同的地图对象。。。地图对象编号可参考游戏自带地图编辑器里面有
 begin
-  case S.KaMRandomI(3) of
-    0: Result := 21;  //�¼����0����Ӧ��ͼ����21�����Զ����������ͬ����
+  case S.KaMRandomI(3) of  //随机事件，3代表3个事件，数据默认从0开始，0,1,2即为3个事件
+    0: Result := 21;  //事件编号0，对应地图对象21，可自定义对象。以下同理。
     1: Result := 59;
     2: Result := 57;
   end;
 end;
 
-//--------------------�ָ���-------------------
+//--------------------分割线-------------------
 
-Procedure OnUnitDied(aUnitID, aKillerIndex: Integer);  //��Ϸ�Դ�������������������֣����ó�����˼�ǵ���λ����ʱ��ִ�����´���
-var  //�Զ������
+Procedure OnUnitDied(aUnitID, aKillerIndex: Integer);  //游戏自带程序（请勿随意更改名字），该程序意思是当单位死亡时，执行如下代码
+var  //自定义参数
   X, Y: Integer;
 begin
-  X := S.UnitPositionX(aUnitID);  //��¼������λ��X��Y����
+  X := S.UnitPositionX(aUnitID);  //记录死亡单位的X，Y坐标
   Y := S.UnitPositionY(aUnitID);
-  A.MapTileObjectSet(X,Y,MapObjectType);  //���õ�ͼ����X��Y���꣬��������Ϊ�����Զ��幦�ܣ������������������λ����
+  A.MapTileObjectSet(X,Y,MapObjectType);  //设置地图对象（X，Y坐标，对象种类为上述自定义功能，坐标采用上述死亡单位坐标
 end;
 
-Procedure OnTick;  //��Ϸ�Դ�������������������֣�������������Ϸ�Ľ��̣����ϵ�ִ���������
-var  //�Զ������
+Procedure OnTick;  //游戏自带程序（请勿随意更改名字），用于随着游戏的进程，不断地执行下面代码
+var  //自定义参数
   X, Y: Integer;
 begin
   begin
-    X := S.UnitPositionX(S.GroupMember(Kings, 0));  //���ӵ�x���긳ֵ������x��
-    Y := S.UnitPositionY(S.GroupMember(Kings, 0));  //���ӵ�y���긳ֵ������y��
-    if (S.UnitPosition(S.GroupMember(Kings, 0)) = U.KMPoint(X,Y)) and (S.MapTileObject(X,Y) = 59) then  //�жϵ����ӵ��������X,Y��������XY�ĵ�ͼ����Ϊ59ʱ��ִ��������룬������������ԭ����ͬ
+    X := S.UnitPositionX(S.GroupMember(Kings, 0));  //军队的x坐标赋值到参数x中
+    Y := S.UnitPositionY(S.GroupMember(Kings, 0));  //军队的y坐标赋值到参数y中
+    if (S.UnitPosition(S.GroupMember(Kings, 0)) = U.KMPoint(X,Y)) and (S.MapTileObject(X,Y) = 59) then  //判断当军队的坐标等于X,Y，且坐标XY的地图对象为59时，执行下面代码，下面三个代码原理相同
       begin
-        A.MapTileObjectSet(X,Y,0);  //������XY�ĵ�ͼ��������
-        A.GiveUnit(0,0,X,Y-5,4);  //�¼���ˢ��λ�������ô�ֻ����Ϊһ�������������ο�
+        A.MapTileObjectSet(X,Y,0);  //将坐标XY的地图对象清零
+        A.GiveUnit(0,0,X,Y-5,4);  //事件，刷单位。。。该处只是作为一个范例，仅供参考
       end;
   end;
 
-  begin  //ͬ��
+  begin  //同上
     X := S.UnitPositionX(S.GroupMember(Kings, 0));
     Y := S.UnitPositionY(S.GroupMember(Kings, 0));
     if (S.UnitPosition(S.GroupMember(Kings, 0)) = U.KMPoint(X,Y)) and (S.MapTileObject(X,Y) = 57) then
       begin
         A.MapTileObjectSet(X,Y,0);
-        A.GiveGroup(0,23,X,Y-5,4,1,1);  //�¼���ˢ����
+        A.GiveGroup(0,23,X,Y-5,4,1,1);  //事件，刷军队
       end;
   end;
 
-  begin  //ͬ��
+  begin  //同上
     X := S.UnitPositionX(S.GroupMember(Kings, 0));
     Y := S.UnitPositionY(S.GroupMember(Kings, 0));
     if (S.UnitPosition(S.GroupMember(Kings, 0)) = U.KMPoint(X,Y)) and (S.MapTileObject(X,Y) = 21) then
       begin
         A.MapTileObjectSet(X,Y,0);
-        A.GiveHouse(0, 17,X,Y-5);  //�¼���ˢ����
+        A.GiveHouse(0, 17,X,Y-5);  //事件，刷建筑
       end;
   end;
 
-//�ܽ�һ�£������δ�����˼���Ǹ����ҷ���λ�ߵ�XY����󣬸���XY���괦��ͬ�ĵ�ͼ����ִ�в�ͬ���¼��������һ��������ͼ����=59ʱ��ִ��ˢ��λ���ڶ���������ͼ����=57ʱ��ִ��ˢ����������������ͼ����=21ʱ��ִ��ˢ�����������ٴ���ǰ��Ļ�ɱ���˺����ˢ�µ�ͼ����������򣬾��ܼ��׵�ʵ�ִ�ϵͳ��
-//�ٴ��������������ֻ����Ϊһ�������������ο�����������Ĺ�����ƻ���Ҫ���ݵ�ͼʵ����Ҫ�����
+//总结一下，这三段代码意思就是根据我方单位走到XY坐标后，根据XY坐标处不同的地图对象执行不同的事件。例如第一个，当地图对象=59时，执行刷单位；第二个，当地图对象=57时，执行刷兵；第三个，当地图对象=21时，执行刷建筑。。。再搭配前面的击杀敌人后，随机刷新地图对象这个程序，就能简易的实现打宝系统了
+//再次声明，这里仅仅只是作为一个范例，仅供参考。。。具体的功能设计还需要根据地图实际需要来设计
 end;
 
-//--------------------�ָ���-------------------
+//--------------------分割线-------------------
 
-Procedure OnMissionStart;  //��Ϸ�Դ�������������������֣�����˼������Ϸ��ʼʱִ��������룬һ���������Ϸ��ʼ�����ֲ������õ�
+Procedure OnMissionStart;  //游戏自带程序（请勿随意更改名字），意思是在游戏开始时执行下面代码，一般多用于游戏初始化各种参数设置等
 begin
-  Kings := A.GiveGroup(0,22,8,50,2,3,3);  //A.GiveGroup����Ϸ�Դ���������ˢ����
+  Kings := A.GiveGroup(0,22,8,50,2,3,3);  //A.GiveGroup是游戏自带程序，用于刷军队
 
-//�ڸ÷����ű��У��������ڿ��ָ���ҷ���һ�����ӣ����ڲ����������롣�ô�ֻ�Ƿ���������Ļ��ǵÿ���ͼ���
+//在该范例脚本中，我设置在开局给玩家放置一个军队，用于测试整个代码。该处只是范例，具体的还是得看地图设计
 end;
 
-//--------------------�ָ���-------------------
+//--------------------分割线-------------------
 
-//��ƪ�����ܽᣬԤ����������¼����ò�ͬ�ĵ�ͼ������һһ��Ӧ���ٸ���ʵ����Ҫ��ƣ����ĳЩ������ִ����Щ�¼��������ʵ���˴�ϵͳ�������
+//整篇代码总结，预先设计数个事件，用不同的地图对象来一一对应，再根据实际需要设计，达成某些条件后，执行这些事件，变相的实现了打宝系统这个理念
 
-//��Ϸ�Դ����������Ҹ����֡���������д�淶�ɲο���ϷԴ������ַ
+//游戏自带程序切勿乱改名字。具体代码编写规范可参考游戏源代码网址
